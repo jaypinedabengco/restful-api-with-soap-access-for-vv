@@ -4,6 +4,7 @@ var connection = require('./connector.soap');
 exports.test = test;
 exports.getSourcesByVerificationId = getSourcesByVerificationId;
 exports.getVerificationResult = getVerificationResult;
+exports.updateVerification = updateVerification;
 
 ///
 
@@ -66,5 +67,25 @@ function getVerificationResult(verification_id){
             verificationId: verification_id
         };
         return client.getVerificationResultAsync(input_parameters);
+    });
+}
+
+/**
+ * 
+ * @param {*} verification_id 
+ * @param {*} data 
+ */
+function updateVerification(verification_id, rule_id, data){
+    return connection
+    .getClient()
+    .then(client => {
+
+        // add accountId & password
+        data.accountId = config.vv.account_id;
+        data.password = config.vv.password;
+        data.verificationId = verification_id;        
+        data.ruleId = rule_id;
+
+        return client.registerVerificationAsync(data);
     });
 }
